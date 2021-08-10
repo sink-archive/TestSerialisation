@@ -1,5 +1,7 @@
 # TestSerialisation
 
+⚠️ THIS CODE IS NOT KIND ON RAM - the UNCOMPRESSED size of your test file * about 5 is the ram this code will use ⚠️
+
 Testing the speed of data de/serialisation libs
 
 An example run I did - when uncompressed that file was ~800mb (tbf this shows how impressive zstandard is that at that speed impact it compressed to an 8th the size)
