@@ -18,7 +18,7 @@ namespace TestSerialisation.Cli
 		private static byte[] MsgPack;
 		private static byte[] MsgPackZstd;
 
-		private static void Main(string[] args)
+		private static void Main()
 		{
 			Console.WriteLine(@"Testing the following:
  - System.Text.Json to string (dotnet builtin)
@@ -30,7 +30,6 @@ namespace TestSerialisation.Cli
 			ReadTestData();
 			var ((scss, scsu, scu, scmp, scmz), (ssss, sssu, ssu, ssmp, smz)) = TestSerialise();
 			var ((dcss, dcsu, dcu, dcmp, dcmz), (dsss, dssu, dsu, dsmp, dmz)) = TestDeserialise();
-			ForTheLoveOfGodStopUsingSoMuchRam();
 
 			Console.WriteLine(Formatter.Table(scss,
 											  scsu,
@@ -54,15 +53,19 @@ namespace TestSerialisation.Cli
 											  dmz));
 		}
 
-		private static void ForTheLoveOfGodStopUsingSoMuchRam()
+		private static void PlsStopUsingSoMuchRam(bool preserveSerialisationResults = false, bool preserveObjects = false)
 		{
-			// set anything possible to null (basically means "the absence of a value")
-			_class   = null;
-			JsonStr  = null;
-			// this stuff well just set to default and empty instead because they arent nullable
-			_struct  = default;
-			JsonUtf1 = JsonUtf2 = MsgPack = MsgPackZstd = Array.Empty<byte>();
-			// finally force the garbage collector to actually do its job
+			if (!preserveObjects)
+			{
+				_class  = null;
+				_struct = default;
+			}
+			if (!preserveSerialisationResults)
+			{
+				JsonUtf1 = JsonUtf2 = MsgPack = MsgPackZstd = Array.Empty<byte>();
+				JsonStr  = null;
+			}
+			// force the garbage collector to actually do its job
 			GC.Collect();
 		}
 
@@ -108,7 +111,9 @@ namespace TestSerialisation.Cli
 		private static ((double, double, double, double, double) classResults, (double, double, double, double, double) structResults) TestSerialise()
 		{
 			var classResults  = TestSerialise(false);
+			PlsStopUsingSoMuchRam(false, true);
 			var structResults = TestSerialise(true);
+			PlsStopUsingSoMuchRam(true, true); // save for TestDeserialise
 			return (classResults, structResults);
 		}
 		
@@ -131,7 +136,9 @@ namespace TestSerialisation.Cli
 		private static ((double, double, double, double, double) classResults, (double, double, double, double, double) structResults)  TestDeserialise()
 		{
 			var classResults  = TestDeserialise(false);
+			PlsStopUsingSoMuchRam(true, true); // save for next TestDeserialise
 			var structResults = TestDeserialise(true);
+			PlsStopUsingSoMuchRam();
 			return (classResults, structResults);
 		}
 		
