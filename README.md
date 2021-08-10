@@ -2,7 +2,7 @@
 
 Testing the speed of data de/serialisation libs
 
-An example run I did - when uncompressed that file was ~800mb
+An example run I did - when uncompressed that file was ~800mb (tbf this shows how impressive zstandard is that at that speed impact it compressed to an 8th the size)
 ```
 ❯ ~/source/ConsoleVideoPlayer/ConsoleVideoPlayer.Player/bin/Debug/net5/ConsoleVideoPlayer.Player -v ~/M
 Timer frequency: 1GHz (1000MHz), High precision: Yes
